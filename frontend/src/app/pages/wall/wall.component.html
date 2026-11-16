@@ -1,0 +1,84 @@
+<app-notification-banner
+  [show]="showBanner"
+  [type]="'success'"
+  [message]="bannerMessage">
+</app-notification-banner>
+
+<div class="page-wall" *ngIf="user">
+  <div class="top-card">
+    <div>
+      <h2>Bienvenue, {{ user.pseudo }} !</h2>
+      <p>Dernière connexion : {{ lastLogin || 'Première connexion' }}</p>
+    </div>
+
+    <button class="logout-btn" (click)="logout()">Se déconnecter</button>
+  </div>
+
+  <!-- Utilisateurs connectés -->
+  <div class="connected-card" *ngIf="connectedUsers.length > 0">
+    <h3>🟢 Utilisateurs connectés ({{ connectedUsers.length }})</h3>
+    <div class="connected-list">
+      <span class="connected-user" *ngFor="let u of connectedUsers">{{ u.pseudo }}</span>
+    </div>
+  </div>
+
+  <!-- Formulaire de création de post -->
+  <app-create-post (postCreated)="onPostCreated($event)"></app-create-post>
+
+  <!-- Section des posts -->
+  <div class="wall-card">
+    <h2>📰 Mur d'accueil - Posts</h2>
+
+    <!-- Tris et filtres -->
+    <div class="filters-bar">
+      <div class="filter-group">
+        <label>Trier par :</label>
+        <select [(ngModel)]="sortBy" (ngModelChange)="applyFiltersAndSort()">
+          <option value="date">Date (récent)</option>
+          <option value="author">Auteur (A-Z)</option>
+          <option value="likes">Popularité (likes)</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Afficher :</label>
+        <select [(ngModel)]="filterMode" (ngModelChange)="applyFiltersAndSort()">
+          <option value="all">Tous les posts</option>
+          <option value="mine">Mes posts</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Hashtag :</label>
+        <input type="text" [(ngModel)]="filterHashtag" (input)="applyFiltersAndSort()" placeholder="Filtrer par #tag" />
+      </div>
+    </div>
+    
+    <!-- Message de chargement -->
+    <p *ngIf="isLoadingPosts" class="loading-message">
+      ⏳ Chargement des posts...
+    </p>
+
+    <!-- Aucun post -->
+    <p *ngIf="!isLoadingPosts && posts.length === 0" class="no-posts">
+      Aucun post pour le moment. Soyez le premier à publier !
+    </p>
+
+    <!-- Liste des posts -->
+    <div *ngIf="!isLoadingPosts" class="posts-list">
+      <app-post-item 
+        *ngFor="let post of posts" 
+        [post]="post"
+        [currentUserId]="user.id"
+        [currentUserPseudo]="user.pseudo">
+      </app-post-item>
+    </div>
+
+    <!-- Bouton Voir plus -->
+    <div *ngIf="hasMore && !isLoadingPosts" class="load-more">
+      <button class="load-more-btn" (click)="loadMore()" [disabled]="isLoadingMore">
+        {{ isLoadingMore ? 'Chargement...' : 'Voir plus' }}
+      </button>
+    </div>
+  </div>
+</div>

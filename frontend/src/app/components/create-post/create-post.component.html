@@ -1,0 +1,62 @@
+<div class="create-post-container">
+  <h2>Publier un nouveau post</h2>
+
+  <app-notification-banner
+    [show]="showBanner"
+    [type]="bannerType"
+    [message]="bannerMessage">
+  </app-notification-banner>
+
+  <form (ngSubmit)="onCreatePost()">
+    <div class="form-group">
+      <label for="postText">Votre message :</label>
+      <textarea
+        id="postText"
+        [(ngModel)]="postText"
+        name="postText"
+        placeholder="Écrivez votre message ici..."
+        rows="4"
+        [disabled]="isLoading">
+      </textarea>
+    </div>
+
+    <!-- Champ hashtags -->
+    <div class="form-group">
+      <label for="hashtagInput">Hashtags :</label>
+      <input
+        type="text"
+        id="hashtagInput"
+        [(ngModel)]="hashtagInput"
+        name="hashtagInput"
+        placeholder="#tag1 #tag2 #tag3"
+        [disabled]="isLoading" />
+      <small class="hint">Séparés par des espaces ou des virgules. Le # est optionnel.</small>
+    </div>
+
+    <!-- Champ URL image -->
+    <div class="form-group">
+      <label for="imageUrl">URL de l'image (optionnel) :</label>
+      <input
+        type="url"
+        id="imageUrl"
+        [(ngModel)]="imageUrl"
+        name="imageUrl"
+        placeholder="https://exemple.com/image.jpg"
+        [disabled]="isLoading" />
+
+      <!-- Prévisualisation si l'URL est renseignée -->
+      <div *ngIf="imageUrl.trim()" class="image-preview">
+        <img [src]="imageUrl.trim()" alt="Aperçu" (error)="imageUrl = ''" />
+      </div>
+    </div>
+
+    <div class="form-buttons">
+      <button type="submit" [disabled]="isLoading">
+        {{ isLoading ? 'Publication en cours...' : 'Publier' }}
+      </button>
+      <button type="button" (click)="onClear()" [disabled]="isLoading">
+        Effacer
+      </button>
+    </div>
+  </form>
+</div>

@@ -2,7 +2,8 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "cli": {
-    "packageManager": "npm"
+    "packageManager": "npm",
+    "analytics": "51bef29f-946c-4f95-ab9f-5576f96bc82a"
   },
   "newProjectRoot": "projects",
   "projects": {
@@ -53,16 +54,22 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular/build:dev-server",
-          "configurations": {
-            "production": {
-              "buildTarget": "frontend:build:production"
-            },
-            "development": {
-              "buildTarget": "frontend:build:development"
-            }
-          },
-          "defaultConfiguration": "development"
+  "builder": "@angular/build:dev-server",
+  "options": {
+    "port": 3142,
+    "host": "0.0.0.0",
+    "allowedHosts": ["pedago.univ-avignon.fr"]
+  },
+  "configurations": {
+    "production": {
+      "buildTarget": "frontend:build:production"
+    },
+    "development": {
+      "buildTarget": "frontend:build:development"
+    }
+  },
+  "defaultConfiguration": "development"
+}
         },
         "test": {
           "builder": "@angular/build:unit-test"
@@ -70,4 +77,4 @@
       }
     }
   }
-}
+

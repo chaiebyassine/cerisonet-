@@ -1,0 +1,60 @@
+<div class="post-card" [class.shared-post]="post.shared">
+  <div class="post-header">
+    <div class="author-info">
+      <h3>{{ post.authorName || ('Utilisateur #' + post.createdBy) }}</h3>
+    </div>
+    <div class="post-header-right">
+      <span *ngIf="post.shared" class="shared-badge">🔁 Partagé</span>
+      <p class="post-date">{{ post.date }} {{ post.hour }}</p>
+    </div>
+  </div>
+
+  <div class="post-content">
+    <p class="post-text">{{ post.body || post.texte }}</p>
+
+    <img *ngIf="post.image?.url"
+         [src]="post.image!.url"
+         [alt]="post.image?.title || ''"
+         class="post-image"/>
+  </div>
+
+  <div class="post-tags" *ngIf="post.hashtags && post.hashtags.length > 0">
+    <span class="tag" *ngFor="let tag of post.hashtags">#{{ tag }}</span>
+  </div>
+
+  <div class="post-footer">
+    <button class="btn-like" (click)="toggleLike()" [class.liked]="hasLiked()">
+      {{ hasLiked() ? '❤️' : '🤍' }} {{ getLikesCount() }} Like(s)
+    </button>
+    <button class="btn-comment" (click)="toggleComments()">
+      💬 {{ getComments().length }} Commentaire(s)
+    </button>
+    <button class="btn-share" (click)="sharePost()" [disabled]="isSharing || isMySharedPost()">
+      {{ isSharing ? '...' : isMySharedPost() ? '✅ Partagé' : '🔁 Partager' }}
+    </button>
+  </div>
+  <p *ngIf="shareMessage" class="share-message">{{ shareMessage }}</p>
+
+  <!-- Section commentaires -->
+  <div class="comments-section" *ngIf="showComments">
+    <div class="comments-list" *ngIf="getComments().length > 0">
+      <div class="comment-item" *ngFor="let c of getComments()">
+        <strong>{{ c.auteur }}</strong>
+        <span class="comment-date">{{ c.date }} {{ c.hour }}</span>
+        <p>{{ c.texte }}</p>
+      </div>
+    </div>
+    <p *ngIf="getComments().length === 0" class="no-comments">Aucun commentaire</p>
+
+    <div class="comment-form">
+      <input type="text"
+             [(ngModel)]="commentText"
+             placeholder="Écrire un commentaire..."
+             (keyup.enter)="submitComment()"
+             [disabled]="isSubmitting" />
+      <button (click)="submitComment()" [disabled]="isSubmitting || !commentText.trim()">
+        {{ isSubmitting ? '...' : 'Envoyer' }}
+      </button>
+    </div>
+  </div>
+</div>
